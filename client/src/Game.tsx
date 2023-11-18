@@ -15,25 +15,34 @@ import { Chess } from "chess.js";
 import CustomDialog from "./components/CustomDialog";
 import socket from "./socket";
 
-function Game({ players, room, orientation, cleanup }) {
+
+// Define types for the props
+interface GameProps {
+  players: { id: string; username: string }[]; // Assuming this structure for players
+  room: string;
+  orientation: 'white' | 'black';
+  cleanup: () => void;
+}
+
+const Game: React.FC<GameProps> = ({ players, room, orientation, cleanup }) => {
   const chess = useMemo(() => new Chess(), []); // <- 1
-  const [fen, setFen] = useState(chess.fen()); // <- 2
-  const [over, setOver] = useState("");
+  const [fen, setFen] = useState<string>(chess.fen()); // <- 2
+  const [over, setOver] = useState<string>('');
 
   const makeAMove = useCallback(
-    (move) => {
+    (move: any) => {
       try {
         const result = chess.move(move); // update Chess instance
         setFen(chess.fen()); // update fen state to trigger a re-render
-  
+
         console.log("over, checkmate", chess.isGameOver(), chess.isCheckmate());
-  
+
         if (chess.isGameOver()) { // check if move led to "game over"
           if (chess.isCheckmate()) { // if reason for game over is a checkmate
             // Set message to checkmate. 
             setOver(
               `Checkmate! ${chess.turn() === "w" ? "black" : "white"} wins!`
-            ); 
+            );
             // The winner is determined by checking for which side made the last move
           } else if (chess.isDraw()) { // if it is a draw
             setOver("Draw"); // set message to "Draw"
@@ -41,7 +50,7 @@ function Game({ players, room, orientation, cleanup }) {
             setOver("Game over");
           }
         }
-  
+
         return result;
       } catch (e) {
         return null;
@@ -51,7 +60,8 @@ function Game({ players, room, orientation, cleanup }) {
   );
 
   // onDrop function
-  function onDrop(sourceSquare, targetSquare) {
+ 
+  function onDrop(sourceSquare: string, targetSquare: string) {
     // orientation is either 'white' or 'black'. game.turn() returns 'w' or 'b'
     if (chess.turn() !== orientation[0]) return false; // <- 1 prohibit player from moving piece of other player
 
@@ -83,13 +93,13 @@ function Game({ players, room, orientation, cleanup }) {
     });
   }, [makeAMove]);
 
-  	
+
   useEffect(() => {
     socket.on('playerDisconnected', (player) => {
       setOver(`${player.username} has disconnected`); // set game over
     });
   }, []);
-  
+
   useEffect(() => {
     socket.on('closeRoom', ({ roomId }) => {
       console.log('closeRoom', roomId, room)

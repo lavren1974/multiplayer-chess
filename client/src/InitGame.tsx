@@ -3,10 +3,22 @@ import { useState } from "react";
 import CustomDialog from "./components/CustomDialog";
 import socket from "./socket";
 
-export default function InitGame({ setRoom, setOrientation, setPlayers }) {
-  const [roomDialogOpen, setRoomDialogOpen] = useState(false);
-  const [roomInput, setRoomInput] = useState(""); // input state
-  const [roomError, setRoomError] = useState("");
+interface Player {
+  id: string;
+  username: string
+}
+
+// Define the types for the props
+interface InitGameProps {
+  setRoom: (room: string) => void;
+  setOrientation: (orientation: 'white' | 'black') => void;
+  setPlayers: (players: Player[]) => void; // Replace 'any' with the specific type for players, if available
+}
+
+const InitGame: React.FC<InitGameProps> = ({ setRoom, setOrientation, setPlayers }) => {
+  const [roomDialogOpen, setRoomDialogOpen] = useState<boolean>(false);
+  const [roomInput, setRoomInput] = useState<string>(""); // input state
+  const [roomError, setRoomError] = useState<string>("");
 
   return (
     <Stack
@@ -16,13 +28,13 @@ export default function InitGame({ setRoom, setOrientation, setPlayers }) {
     >
       <CustomDialog
         open={roomDialogOpen}
-        handleClose={() => setRoomDialogOpen(false)}
+        // handleClose={() => setRoomDialogOpen(false)}
         title="Select Room to Join"
         contentText="Enter a valid room ID to join the room"
         handleContinue={() => {
           // join a room
           if (!roomInput) return; // if given room input is valid, do nothing.
-          socket.emit("joinRoom", { roomId: roomInput }, (r) => {
+          socket.emit("joinRoom", { roomId: roomInput }, (r: any) => {
             // r is the response from the server
             if (r.error) return setRoomError(r.message); // if an error is returned in the response set roomError to the error message and exit
             console.log("response:", r);
@@ -55,8 +67,10 @@ export default function InitGame({ setRoom, setOrientation, setPlayers }) {
       <Button
         variant="contained"
         onClick={() => {
-          socket.emit("createRoom", (r) => {
-            console.log(r);
+          console.log("createRoom1");
+          socket.emit("createRoom", (r: string) => {
+            console.log(r); // d9463183-6926-4668-adcf-46e2124b9344
+            console.log("createRoom2");
             setRoom(r);
             setOrientation("white");
           });
@@ -75,3 +89,6 @@ export default function InitGame({ setRoom, setOrientation, setPlayers }) {
     </Stack>
   );
 }
+
+
+export default InitGame;

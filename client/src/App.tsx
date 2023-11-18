@@ -6,19 +6,25 @@ import CustomDialog from "./components/CustomDialog";
 import socket from "./socket";
 import { TextField } from "@mui/material";
 
-export default function App() {
-  const [username, setUsername] = useState("");
-  const [usernameSubmitted, setUsernameSubmitted] = useState(false);
+interface Player {
+  id: string; 
+  username: string
+}
 
-  const [room, setRoom] = useState("");
-  const [orientation, setOrientation] = useState("");
-  const [players, setPlayers] = useState([]);
+const App: React.FC = () => {
+  const [username, setUsername] = useState<string>("");
+  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
+
+  const [room, setRoom] = useState<string>("");
+  //const [orientation, setOrientation] = useState("");
+  const [orientation, setOrientation] = useState<"black" | "white">("white");
+  const [players, setPlayers] = useState<Player[]>([]);
 
   // resets the states responsible for initializing a game
   const cleanup = useCallback(() => {
     setRoom("");
-    setOrientation("");
-    setPlayers("");
+    setOrientation("white");
+    setPlayers([]); // clear
   }, []);
 
   useEffect(() => {
@@ -36,7 +42,8 @@ export default function App() {
     <Container>
       <CustomDialog
         open={!usernameSubmitted}
-        handleClose={() => setUsernameSubmitted(true)}
+      
+        //handleClose={() => setUsernameSubmitted(true)}
         title="Pick a username"
         contentText="Please select a username"
         handleContinue={() => {
@@ -63,7 +70,7 @@ export default function App() {
         <Game
           room={room}
           orientation={orientation}
-          username={username}
+         // username={username}
           players={players}
           // the cleanup function will be used by Game to reset the state when a game is over
           cleanup={cleanup}
@@ -78,3 +85,5 @@ export default function App() {
     </Container>
   );
 }
+
+export default App;
