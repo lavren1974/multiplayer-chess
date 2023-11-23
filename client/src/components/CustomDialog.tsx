@@ -6,6 +6,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+
+// open : логическое значение, определяющее, следует ли отображать диалог или нет.
+// children : реквизит для получения дочерних элементов компонента. Дочерние элементы отображаются в содержимом диалога.
+// title : Название диалога.
+// contentText : Сообщение, которое будет отображаться в диалоговом окне.
+// handleContinue : Функция, вызываемая при нажатии кнопки «Продолжить»
+
 // Define an interface for the props
 interface CustomDialogProps {
   open: boolean;

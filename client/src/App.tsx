@@ -7,7 +7,7 @@ import socket from "./socket";
 import { TextField } from "@mui/material";
 
 interface Player {
-  id: string; 
+  id: string;
   username: string
 }
 
@@ -42,7 +42,7 @@ const App: React.FC = () => {
     <Container>
       <CustomDialog
         open={!usernameSubmitted}
-      
+
         //handleClose={() => setUsernameSubmitted(true)}
         title="Pick a username"
         contentText="Please select a username"
@@ -70,7 +70,7 @@ const App: React.FC = () => {
         <Game
           room={room}
           orientation={orientation}
-         // username={username}
+          // username={username}
           players={players}
           // the cleanup function will be used by Game to reset the state when a game is over
           cleanup={cleanup}
